@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gresources>
+  <gresource prefix="/org/erikreider/sway-floating-switcher">
+    <file>Window/window.ui</file>
+    <file>ApplicationItem/application_item.ui</file>
+  </gresource>
+</gresources>
