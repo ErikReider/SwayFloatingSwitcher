@@ -1,6 +1,6 @@
 # SwayFloatingSwitcher
 
-A simple alt-tab daemon for switching between floating windows with Alt+Tab.
+A simple daemon for switching between floating windows with Alt+Tab.
 
 ## Important inforamtion
 
