@@ -32,7 +32,7 @@ namespace Swayfloatingswitcher {
                         if (selected.length () == 0) break;
                         var item = (ApplicationItem) selected.nth_data (0);
                         if (item == null) break;
-                        ipc.run_command (@"[pid=$(item.appNode.pid.to_string ())] focus");
+                        ipc.run_command (@"[con_id=$(item.appNode.id.to_string ())] focus");
                         break;
                 }
                 return true;
