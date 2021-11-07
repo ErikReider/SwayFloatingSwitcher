@@ -61,7 +61,7 @@ namespace Swayfloatingswitcher {
                 } else {
                     AppNode n = Json.gobject_deserialize (
                         typeof (AppNode), item) as AppNode;
-                    if (n != null) nodes.add (n);
+                    if (n != null) nodes.insert (0, n);
                 }
             }
         }
