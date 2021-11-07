@@ -29,7 +29,7 @@ namespace Swayfloatingswitcher {
                     var app = new DesktopAppInfo (desktop);
                     image.set_from_gicon (app.get_icon (),
                                           Gtk.IconSize.INVALID);
-                    name = app.get_display_name ();
+                    name = appNode.name ?? app.get_display_name ();
                 } else {
                     image.set_from_icon_name ("image-missing",
                                               Gtk.IconSize.INVALID);
