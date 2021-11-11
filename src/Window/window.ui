@@ -20,6 +20,9 @@
         <property name="visible">True</property>
         <property name="can-focus">False</property>
         <property name="orientation">vertical</property>
+        <property name="column-spacing">4</property>
+        <property name="row-spacing">4</property>
+        <property name="activate-on-single-click">False</property>
       </object>
     </child>
   </template>
