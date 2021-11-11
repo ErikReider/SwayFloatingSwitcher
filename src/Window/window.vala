@@ -21,7 +21,7 @@ namespace Swayfloatingswitcher {
                 this,
                 GtkLayerShell.KeyboardMode.EXCLUSIVE);
 #else
-            GtkLayerShell.set_keyboard_interactivity (this, keyboard_shortcuts);
+            GtkLayerShell.set_keyboard_interactivity (this, true);
 #endif
 
             this.key_release_event.connect ((e) => {
