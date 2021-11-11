@@ -1,7 +1,0 @@
-data/org.erikreider.sway-floating-switcher.desktop.in
-data/org.erikreider.sway-floating-switcher.appdata.xml.in
-data/org.erikreider.sway-floating-switcher.gschema.xml
-src/window.ui
-src/main.vala
-src/window.vala
-
