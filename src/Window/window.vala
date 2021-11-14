@@ -49,7 +49,6 @@ namespace Swayfloatingswitcher {
 
         public void select (bool next) {
             if (!visible) {
-                index = 0;
                 var node = ipc.get_reply (Sway_commands.GET_WORKSPACES);
                 WorkspaceNode workspace = null;
                 switch (node.get_node_type ()) {
@@ -78,6 +77,17 @@ namespace Swayfloatingswitcher {
                     if (item.is_valid) flow_box.add (item);
                 }
 
+                GLib.List<weak Gtk.Widget> children = flow_box.get_children ();
+                uint len = children.length ();
+                if (len > 1) {
+                    if (next) {
+                        index = 1;
+                    } else {
+                        index = (int) len - 1;
+                    }
+                } else {
+                    index = 0;
+                }
                 present ();
             } else {
                 uint len = flow_box.get_children ().length ();
@@ -89,9 +99,9 @@ namespace Swayfloatingswitcher {
                     index--;
                     if (index < 0) index = (int) len - 1;
                 }
-                Gtk.FlowBoxChild ? child = flow_box.get_child_at_index (index);
-                if (child != null) flow_box.select_child (child);
             }
+            Gtk.FlowBoxChild ? child = flow_box.get_child_at_index (index);
+            if (child != null) flow_box.select_child (child);
         }
     }
 }
