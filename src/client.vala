@@ -18,13 +18,11 @@ private void print_help (string[] args) {
 }
 
 public int command_line (string[] args) {
-    bool skip_wait = "--skip-wait" in args || "-sw" in args;
-
+    if (args.length < 2) {
+        print_help (args);
+        Process.exit (1);
+    }
     try {
-        if (args.length < 2) {
-            print_help (args);
-            return 1;
-        }
         switch (args[1]) {
             case "--help":
             case "-h":
@@ -43,8 +41,7 @@ public int command_line (string[] args) {
                 break;
         }
     } catch (Error e) {
-        stderr.printf (e.message + "\n");
-        if (skip_wait) Process.exit (1);
+        stderr.printf ("ERROR: %s\n", e.message);
         return 1;
     }
     return 0;
@@ -52,7 +49,7 @@ public int command_line (string[] args) {
 
 void print_connection_error () {
     stderr.printf (
-        "Could not connect to CC service. Will wait for connection...\n");
+        "ERROR! Could not connect to switcher service...\n");
 }
 
 int try_connect (string[] args) {
@@ -74,16 +71,10 @@ int try_connect (string[] args) {
 
 public int main (string[] args) {
     if (try_connect (args) == 1) {
-        MainLoop loop = new MainLoop ();
         Bus.watch_name (
             BusType.SESSION,
             "org.erikreider.swayfloatingswitcher",
-            GLib.BusNameWatcherFlags.NONE,
-            (conn, name, name_owner) => {
-            if (try_connect (args) == 0) loop.quit ();
-        },
-            null);
-        loop.run ();
+            GLib.BusNameWatcherFlags.NONE);
     }
     return 0;
 }
