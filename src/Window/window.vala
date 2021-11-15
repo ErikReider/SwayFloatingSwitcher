@@ -80,15 +80,18 @@ namespace Swayfloatingswitcher {
                                                               "focus tiling");
                 flow_box.add (tiling_item);
 
+                bool is_floating_focus = false;
                 unowned ArrayList<AppNode> nodes = workspace.nodes;
                 foreach (var app in nodes) {
+                    if (app.focused) is_floating_focus = true;
                     var item = new ApplicationItem (app);
                     if (item.is_valid) flow_box.add (item);
                 }
 
                 GLib.List<weak Gtk.Widget> children = flow_box.get_children ();
                 uint len = children.length ();
-                index = 1;
+                // To quickly toggle between tiled and floating windows
+                index = is_floating_focus ? 0 : 1;
                 if (len > 2) {
                     if (next) {
                         index = 2;
