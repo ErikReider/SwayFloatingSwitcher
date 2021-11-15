@@ -19,7 +19,7 @@ namespace Swayfloatingswitcher {
         public ApplicationItem (AppNode node) {
             this.appNode = node;
 
-            string ? name = appNode.name;
+            string ? name = null;
             bool icon = false;
             try {
                 string path = Path.build_path (Path.DIR_SEPARATOR_S,
@@ -49,15 +49,15 @@ namespace Swayfloatingswitcher {
                         }
                         name = app.get_display_name ();
                     } else {
-                        name = this.appNode.name ?? basename;
+                        name = basename;
                     }
                 }
             } catch (Error e) {
                 stderr.printf ("App item ERROR: %s\n", e.message);
             }
-            if (name != null) {
+            if (appNode.name != null || name != null) {
                 is_valid = true;
-                title.set_text (name);
+                title.set_text (appNode.name ?? name);
             }
 
             if (!icon) {
