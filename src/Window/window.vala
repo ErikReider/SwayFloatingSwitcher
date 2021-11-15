@@ -32,7 +32,10 @@ namespace Swayfloatingswitcher {
                         if (selected.length () == 0) break;
                         var item = (ApplicationItem) selected.nth_data (0);
                         if (item == null) break;
-                        ipc.run_command (@"[con_id=$(item.appNode.id.to_string ())] focus");
+                        string cmd = item.is_application
+                            ? @"[con_id=$(item.appNode.id.to_string ())] focus"
+                            : item.cmd;
+                        ipc.run_command (cmd);
                         break;
                 }
                 return true;
@@ -71,6 +74,12 @@ namespace Swayfloatingswitcher {
                 foreach (var child in flow_box.get_children ()) {
                     flow_box.remove (child);
                 }
+
+                var tiling_item = new ApplicationItem.custom ("Tiling",
+                                                              "video-display",
+                                                              "focus tiling");
+                flow_box.add (tiling_item);
+
                 unowned ArrayList<AppNode> nodes = workspace.nodes;
                 foreach (var app in nodes) {
                     var item = new ApplicationItem (app);
@@ -79,14 +88,13 @@ namespace Swayfloatingswitcher {
 
                 GLib.List<weak Gtk.Widget> children = flow_box.get_children ();
                 uint len = children.length ();
-                if (len > 1) {
+                index = 1;
+                if (len > 2) {
                     if (next) {
-                        index = 1;
+                        index = 2;
                     } else {
                         index = (int) len - 1;
                     }
-                } else {
-                    index = 0;
                 }
                 present ();
             } else {

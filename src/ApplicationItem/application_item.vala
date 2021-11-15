@@ -9,11 +9,15 @@ namespace Swayfloatingswitcher {
 
         public bool is_valid = true;
         public AppNode appNode;
+        public bool is_application = true;
+        public string ? cmd;
+
+        construct {
+            image.set_pixel_size (96);
+        }
 
         public ApplicationItem (AppNode node) {
             this.appNode = node;
-
-            image.set_pixel_size (96);
 
             string ? name = null;
             try {
@@ -42,6 +46,18 @@ namespace Swayfloatingswitcher {
             }
 
             title.set_text (name);
+        }
+
+        public ApplicationItem.custom (string title,
+                                       owned string image_name,
+                                       string cmd) {
+            this.is_application = false;
+            this.cmd = cmd;
+
+            this.title.set_text (title);
+            if (image_name.length == 0) image_name = " image-missing";
+            this.image.set_from_icon_name (image_name,
+                                           Gtk.IconSize.INVALID);
         }
     }
 }
