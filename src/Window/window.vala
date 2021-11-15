@@ -25,8 +25,10 @@ namespace Swayfloatingswitcher {
 #endif
 
             this.key_release_event.connect ((e) => {
+                debug ("Release keyval: %s\n", Gdk.keyval_name (e.keyval));
                 switch (Gdk.keyval_name (e.keyval)) {
                     case "Alt_L":
+                    case "Meta_L":
                         this.hide ();
                         var selected = flow_box.get_selected_children ();
                         if (selected.length () == 0) break;
@@ -41,6 +43,7 @@ namespace Swayfloatingswitcher {
                 return true;
             });
             this.key_press_event.connect ((e) => {
+                debug ("Press keyval: %s\n", Gdk.keyval_name (e.keyval));
                 switch (Gdk.keyval_name (e.keyval)) {
                     case "Escape":
                         this.hide ();
