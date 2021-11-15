@@ -7,10 +7,10 @@ namespace Swayfloatingswitcher {
         [GtkChild]
         unowned Gtk.Label title;
 
-        public bool is_valid = true;
-        public AppNode appNode;
-        public bool is_application = true;
-        public string ? cmd;
+        public AppNode appNode { public get; private set; }
+        public bool is_valid { public get; private set; default = true; }
+        public bool is_application { public get; private set; default = true; }
+        public string cmd { public get; private set; default = ""; }
 
         construct {
             image.set_pixel_size (96);
