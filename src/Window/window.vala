@@ -94,7 +94,7 @@ namespace Swayfloatingswitcher {
                 index = is_floating_focus ? 0 : 1;
                 if (len > 2) {
                     if (next) {
-                        index = 2;
+                        index = is_floating_focus ? 2 : 1;
                     } else {
                         index = (int) len - 1;
                     }
