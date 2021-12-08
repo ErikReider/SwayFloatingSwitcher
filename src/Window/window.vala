@@ -48,6 +48,12 @@ namespace Swayfloatingswitcher {
                     case "Escape":
                         this.hide ();
                         break;
+                    case "Left":
+                        select (false);
+                        break;
+                    case "Right":
+                        select (true);
+                        break;
                 }
                 return true;
             });
