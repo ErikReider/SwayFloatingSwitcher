@@ -2,7 +2,6 @@ swayfloatingswitcher_sources = [
   './main.vala',
   './Window/window.vala',
   './SwayIPC/swayipc.vala',
-  './Daemon/daemon.vala',
   './Node/node.vala',
   './ApplicationItem/application_item.vala',
 ]
@@ -40,16 +39,6 @@ executable(
   'swayfloatingswitcher',
   swayfloatingswitcher_sources,
   vala_args: args, 
-  dependencies: app_deps,
-  install: true,
-)
-
-executable(
-  'swayfloatingswitcher-client',
-  [
-    'client.vala',
-  ],
-  vala_args: args,
   dependencies: app_deps,
   install: true,
 )

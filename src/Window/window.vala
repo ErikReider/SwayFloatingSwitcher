@@ -3,6 +3,7 @@ using Gee;
 namespace Swayfloatingswitcher {
     [GtkTemplate (ui = "/org/erikreider/sway-floating-switcher/Window/window.ui")]
     public class Window : Gtk.ApplicationWindow {
+        const double DEGREES = Math.PI / 180.0;
 
         [GtkChild]
         unowned Gtk.FlowBox flow_box;
@@ -10,11 +11,13 @@ namespace Swayfloatingswitcher {
         IPC ipc;
         int index = 0;
 
-        public Window (IPC ipc) {
+        public Window (Gtk.Application app, IPC ipc) {
+            Object (application: app);
+
             this.ipc = ipc;
 
             GtkLayerShell.init_for_window (this);
-            GtkLayerShell.set_layer (this, GtkLayerShell.Layer.TOP);
+            GtkLayerShell.set_layer (this, GtkLayerShell.Layer.OVERLAY);
 
 #if HAVE_LATEST_GTK_LAYER_SHELL
             GtkLayerShell.set_keyboard_mode (
@@ -24,39 +27,71 @@ namespace Swayfloatingswitcher {
             GtkLayerShell.set_keyboard_interactivity (this, true);
 #endif
 
-            this.key_release_event.connect ((e) => {
-                debug ("Release keyval: %s\n", Gdk.keyval_name (e.keyval));
-                switch (Gdk.keyval_name (e.keyval)) {
-                    case "Alt_L":
-                    case "Meta_L":
-                        this.hide ();
-                        var selected = flow_box.get_selected_children ();
-                        if (selected.length () == 0) break;
-                        var item = (ApplicationItem) selected.nth_data (0);
-                        if (item == null) break;
-                        string cmd = item.is_application
-                            ? @"[con_id=$(item.appNode.id.to_string ())] focus"
-                            : item.cmd;
-                        ipc.run_command (cmd);
-                        break;
-                }
-                return true;
-            });
-            this.key_press_event.connect ((e) => {
-                debug ("Press keyval: %s\n", Gdk.keyval_name (e.keyval));
-                switch (Gdk.keyval_name (e.keyval)) {
-                    case "Escape":
-                        this.hide ();
-                        break;
-                    case "Left":
-                        select (false);
-                        break;
-                    case "Right":
-                        select (true);
-                        break;
-                }
-                return true;
-            });
+            this.set_size_request (10, 10);
+            get_style_context ().add_class ("osd");
+        }
+
+        protected override bool draw(Cairo.Context ctx) {
+            double width = this.get_allocated_width ();
+            double height = this.get_allocated_height ();
+            double radius = 12.0;
+
+            ctx.new_sub_path ();
+            ctx.arc (width - radius, radius, radius, -90 * DEGREES, 0 * DEGREES);
+            ctx.arc (width - radius, height - radius, radius, 0 * DEGREES, 90 * DEGREES);
+            ctx.arc (radius, height - radius, radius, 90 * DEGREES, 180 * DEGREES);
+            ctx.arc (radius, radius, radius, 180 * DEGREES, 270 * DEGREES);
+            ctx.close_path ();
+
+            ctx.clip ();
+            base.draw (ctx);
+            return true;
+        }
+
+        public override bool key_release_event (Gdk.EventKey e) {
+            debug ("Release keyval: %s\n", Gdk.keyval_name (e.keyval));
+            switch (Gdk.keyval_name (e.keyval)) {
+                case "Alt_L":
+                case "Meta_L":
+                    this.hide ();
+                    select_item ();
+                    break;
+            }
+            return true;
+        }
+
+        public override bool key_press_event (Gdk.EventKey e) {
+            debug ("Press keyval: %s\n", Gdk.keyval_name (e.keyval));
+            switch (Gdk.keyval_name (e.keyval)) {
+                case "Escape":
+                    this.hide ();
+                    break;
+                case "Return":
+                    this.hide ();
+                    select_item ();
+                    break;
+                case "Left":
+                    select (false);
+                    break;
+                case "Right":
+                    select (true);
+                    break;
+            }
+            return true;
+        }
+
+        private void select_item () {
+            Idle.add (() => {
+                var selected = flow_box.get_selected_children ();
+                if (selected.length () == 0) return Source.REMOVE;
+                var item = (ApplicationItem) selected.nth_data (0);
+                if (item == null) return Source.REMOVE;
+                string cmd = item.is_application
+                    ? @"[con_id=$(item.appNode.id.to_string ())] focus"
+                    : item.cmd;
+                ipc.run_command (cmd);
+                return Source.REMOVE;
+            }, Priority.HIGH_IDLE);
         }
 
         public void select (bool next) {
@@ -85,7 +120,7 @@ namespace Swayfloatingswitcher {
                 }
 
                 var tiling_item = new ApplicationItem.custom ("Tiling",
-                                                              "video-display",
+                                                              "view-grid-symbolic",
                                                               "focus tiling");
                 flow_box.add (tiling_item);
 
@@ -108,7 +143,7 @@ namespace Swayfloatingswitcher {
                         index = (int) len - 1;
                     }
                 }
-                present ();
+                this.present ();
             } else {
                 uint len = flow_box.get_children ().length ();
                 if (len <= 1) return;
@@ -122,6 +157,7 @@ namespace Swayfloatingswitcher {
             }
             Gtk.FlowBoxChild ? child = flow_box.get_child_at_index (index);
             if (child != null) flow_box.select_child (child);
+            return;
         }
     }
 }

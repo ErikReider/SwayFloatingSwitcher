@@ -26,7 +26,7 @@ meson install -C build
 exec swayfloatingswitcher
 
 # Switch between programs. MUST USE ALT!
-bindsym Alt+Tab exec swayfloatingswitcher-client --next
-bindsym Alt+Shift+Tab exec swayfloatingswitcher-client --previous
+bindsym Alt+Tab exec swayfloatingswitcher --next
+bindsym Alt+Shift+Tab exec swayfloatingswitcher --previous
 ```
 
